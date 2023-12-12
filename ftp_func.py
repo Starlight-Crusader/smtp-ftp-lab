@@ -1,4 +1,5 @@
 from ftplib import FTP
+from os import path
 
 
 class FTPClient:
@@ -13,8 +14,10 @@ class FTPClient:
         self.ftp.login(self.username, self.password)
         self.ftp.cwd(self.server_wd)
 
-    def upload(self, path, filename) -> str:
-        with open(path, 'rb') as local_file:
+    def upload(self, local_path) -> str:
+        filename = [element for element in local_path.split(path.sep) if element][-1]
+
+        with open(local_path, 'rb') as local_file:
             self.ftp.storbinary('STOR ' + filename, local_file)
 
         return f"ftp:://{self.username}:{self.password}@{self.server_host}{self.server_wd}{filename}"
